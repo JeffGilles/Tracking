@@ -90,9 +90,26 @@ public class ScoringFunction {
      * @param area of the image
      * @return 
      */
-    public static double posteriorProba (double[] pt, double[] pt1, double variance, double prior, double area){
+    public static double posteriorProbaMobility (double[] pt, double[] pt1, double variance, double prior, double area){
         return (prior*gaussianFunction3D(pt, pt1, variance)) / (prior*gaussianFunction3D(pt, pt1, variance)+(1-prior)*(1/area));
     }
+    
+    /**
+     * Return a prior proba relative to the proximity of the edge
+     * @param pt point to analyse
+     * @param width of the image
+     * @param height of the image
+     * @param nSlices of the image
+     * @return 
+     */
+    public static double priorProbaOut(double[] pt, int width, int height, int nSlices){
+        double prior=Math.max((Math.abs(pt[0]-(width/2))/(width/2)),(Math.abs(pt[1]-(height/2))/(height/2))); //prior increase when position is near one edge
+        if(nSlices>20){
+            prior=Math.max(prior, (Math.abs(pt[2]-(nSlices/2))/(nSlices/2)));
+        }
+        return (prior*prior); //I add a non linear variable to enhance the value when near edges and reduce it when in center
+    }
+    
     
     
     public static List<ArrayList> scoreMobility (double variance, double prior, double area){
@@ -109,8 +126,8 @@ public class ScoringFunction {
 //                    double euclidianDist = Math.pow( (Math.pow(o1[0]-o[0], 2) + Math.pow(o1[1]-o[1], 2) + Math.pow(o1[2]-o[2], 2)), 0.5);
 //                    double gauss = ScoringFunction.gaussianFunction3D(o, o1, variance);
                     
-                    double proba = (ScoringFunction.posteriorProba(o, o1, variance, prior, area));
-                    double logProba = Math.log(1)-Math.log(proba);
+                    double probaM = (ScoringFunction.posteriorProbaMobility(o, o1, variance, prior, area));
+                    double logProbaM = Math.log(1)-Math.log(probaM);
                     //show only bestProba
 //                    if(!(String.valueOf(logProba).equals("NaN")) && (logProba!=0.0)){
 //                        IJ.log(""+t+" ob1="+(i+1)+" ob2="+(j+1)+" distance "+euclidianDist+"  f="+gauss+"  p="+proba+"  deltaG="+logProba);
@@ -120,7 +137,7 @@ public class ScoringFunction {
 //                    }
                     //Ne faut-il pas récupéter directement le meilleur dès le calcul...
                     
-                    link.set(j, logProba);
+                    link.set(j, logProbaM);
 //                    double value = link.set(j, logProba);
 //                    IJ.log(""+value);
                 }
