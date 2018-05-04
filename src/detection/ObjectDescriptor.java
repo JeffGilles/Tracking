@@ -29,10 +29,17 @@ public class ObjectDescriptor {
      */
     private double z;
     /**
-     * hidden if more than 0
+     * volume
      */
-    private int h;
-
+    private int v;
+    /**
+     * parent time if split
+     */
+    private int pt;
+    /**
+     * parent number if split
+     */
+    private int pn;
     
     
 /**
@@ -40,16 +47,19 @@ public class ObjectDescriptor {
  * @param timePoint
  * @param number
  * @param center
- * @param hidden , it can be used if object disappear
+ * @param volume (pixels)
+ * @param parentTime
+ * @param parentNumber
  */
-    public ObjectDescriptor (int timePoint, int number, double[] center, int hidden){
+    public ObjectDescriptor (int timePoint, int number, double[] center, int volume, int parentTime, int parentNumber){
         t = timePoint;
         n = number;
         x = center[0];
         y = center[1];
         z = center[2];
-        h = hidden;
-
+        v = volume;
+        pt = parentTime;
+        pn = parentNumber;
     }
     
     /**
@@ -58,6 +68,14 @@ public class ObjectDescriptor {
      */
     public void setT(int newVar) {
         t = newVar;
+    }
+    
+        /**
+     * Set the value of n
+     * @param newVar 
+     */
+    public void setN(int newVar) {
+        n = newVar;
     }
     
     /**
@@ -85,13 +103,28 @@ public class ObjectDescriptor {
     }
     
     /**
-     * Set the value of h (object is hidden if more than 0)
+     * Set the value of v (volume in pixels)
      * @param newVar 
      */
-    public void setH(int newVar) {
-        h = newVar;
+    public void setV(int newVar) {
+        v = newVar;
     }
     
+    /**
+     * Set the value time of pt (object parent)
+     * @param newVar 
+     */
+    public void setPt(int newVar) {
+        pt = newVar;
+    }
+    
+    /**
+     * Set the values of p (object parent), [0]=time,[1]=number of object
+     * @param newVar 
+     */
+    public void setPn(int newVar) {
+        pn = newVar;
+    }
     
     /**
      * Get the value of t, timePoint
@@ -134,11 +167,27 @@ public class ObjectDescriptor {
     }
     
     /**
-     * Get the value of h, hidden object if more than 0
-     * @return the value of h, 
+     * Get the value of v (volume in pixels)
+     * @return the value of v, 
      */
-    public int getH() {
-        return h;
+    public int getV() {
+        return v;
+    }
+    
+    /**
+     * Get the value of parent time
+     * @return the value of Parent time, 
+     */
+    public int getPt() {
+        return pt;
+    }
+    
+    /**
+     * Get the value of parent number
+     * @return the value of Parent number, 
+     */
+    public int getPn() {
+        return pn;
     }
 
     
@@ -157,11 +206,12 @@ public class ObjectDescriptor {
      * @return 
      */
     public double[] asArray(){
-        double[] center = new double[4];
+        double[] center = new double[5];
         center[0] = this.x;
         center[1] = this.y;
         center[2] = this.z;
         center[3] = this.t;
+        center[4] = this.n;
         return center;
     }
 }
